@@ -1,4 +1,4 @@
-# **Openai Proxy Server**
+# **OpenAI Proxy Server**
 
 A backend **Proxy server** for quota, usage monitoring and tracking of OpenAI requests
 
@@ -43,6 +43,5 @@ openai.api_base = f'https://{Base_Server_Url}/{proxy_api_key}/v1'
 ```
 The **openai.api_key** must contain some value. You can provide any garbage to it because the requests are being transfered to the backend server, so it doensn't matter.
 
-After using this you can simply use the default **openai-functions** for you particular use case. <br>
+After using this you can simply use the normal OpenAI API functions for your particular use case.
 
-**DAMN :)**
