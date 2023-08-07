@@ -4,6 +4,7 @@ from proxy_app.Database.models.base import Base
 from proxy_app.Database.models.openaiRequestResponse import OpenAIRequestResponse
 from proxy_app.Database.models.apiKeyToQuota import APIKeyToQuota
 from sqlalchemy.orm import Session
+import psycopg2
 
 class ProxyAPIDatabase():
     def __init__(self, db_type, db_module, username, password, host, name):
@@ -13,8 +14,9 @@ class ProxyAPIDatabase():
         self.password = password
         self.host = host
         self.name = name
+        self.url = f'{db_type}+{db_module}://{username}:{password}@{host}/{name}'
 
-        self.engine = create_engine(f'{db_type}+{db_module}://{username}:{password}@{host}/{self.name}')
+        self.engine = create_engine(self.url)
 
     def init_db(self):
         print(f"Data base initialized with [Type:{self.db_type}] and [Name:{self.name}]")
