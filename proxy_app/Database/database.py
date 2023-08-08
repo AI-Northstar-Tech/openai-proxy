@@ -16,7 +16,7 @@ class ProxyAPIDatabase:
         self.host = host
         self.name = name
         self.url = f"{db_type}+{db_module}://{username}:{password}@{host}/{name}"
-
+        print(f"Database URL: {self.url}")
         self.engine = create_engine(self.url)
 
     def init_db(self):
