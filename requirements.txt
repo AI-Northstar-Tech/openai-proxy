@@ -1,7 +1,7 @@
 openai
 flask
-gunicorn
 uuid
 tiktoken
 sqlalchemy
 argparse
+waitress
