@@ -6,6 +6,7 @@ from typing import Any
 from proxy_app.Database.models.apiKeyToQuota import APIKeyToQuota, Base
 from sqlalchemy import Column, Integer
 
+
 class OpenAIRequestResponse(Base):
     __tablename__ = "openai_request_response"
 

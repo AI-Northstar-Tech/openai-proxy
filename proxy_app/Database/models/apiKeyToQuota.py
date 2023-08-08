@@ -3,6 +3,7 @@ from proxy_app.Database.models.base import Base
 from sqlalchemy.orm import mapped_column
 from typing import List, Optional
 
+
 class APIKeyToQuota(Base):
     __tablename__ = "api_key_to_quota"
 
