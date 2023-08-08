@@ -4,6 +4,4 @@ from typing import Any
 
 
 class Base(DeclarativeBase):
-	type_annotation_map = {
-        dict[str, Any]: JSON
-    }
+    type_annotation_map = {dict[str, Any]: JSON}
