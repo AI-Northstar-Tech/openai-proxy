@@ -10,48 +10,56 @@ import openai
 import dotenv
 import os
 dotenv.load_dotenv('.env')
-import argparse
-
-parser = argparse.ArgumentParser(description='OpenAI API Proxy Server')
-parser.add_argument('-p','--port', type=int, default=5000, help='Port to run the server on, defaults to 5000')
-parser.add_argument('-t','--db_type', type=str, help='Database Type, for eg.: postgresql')
-parser.add_argument('-m','--db_module', type=str, help='Database Module, for eg.: psycopg2')
-parser.add_argument('-u','--db_username', type=str, help='Database Username')
-parser.add_argument('-w','--db_password', type=str, help='Database Password')
-parser.add_argument('-b','--db_host', type=str, default='localhost',help='Database URL, defaults to localhost')
-parser.add_argument('-d','--db_name', type=str,help='Database Name')
-parser.add_argument('-a','--api_key', type=str, help='OpenAI API Key')
-parser.add_argument('-n', '--admin', type=str, help='Admin Username for the Proxy Server')
-parser.add_argument('-s', '--admin_pass', type=str, help='Admin Password for the Proxy Server')
-
-args, unknown = parser.parse_known_args()
-
-if(args.db_type != None):
-    os.environ['DB_TYPE'] = args.db_type
-if(args.db_module != None):
-    os.environ['DB_MODULE'] = args.db_module
-if(args.db_username != None):
-    os.environ['DB_USERNAME'] = args.db_username
-if(args.db_password != None):
-    os.environ['DB_PASSWORD'] = args.db_password
-if(args.db_host != None):
-    os.environ['DB_HOST'] = args.db_host
-if(args.db_name != None):
-    os.environ['DB_NAME'] = args.db_name
-if(args.api_key != None):
-    os.environ['OPENAI_API_KEY'] = args.api_key
-if(args.admin != None):
-    os.environ['PROXY_SERVER_USER'] = args.admin
-if(args.admin_pass != None):
-    os.environ['PROXY_SERVER_PASS'] = args.admin_pass
 
 app = Flask(__name__)
 
-db = ProxyAPIDatabase(os.environ.get('DB_TYPE'), os.environ.get('DB_MODULE'), os.environ.get('DB_USERNAME'), os.environ.get('DB_PASSWORD'), os.environ.get('DB_HOST'), os.environ.get('DB_NAME'))
-db.init_db()
+# import argparse
 
-create_api_key_user = os.environ.get('PROXY_SERVER_USER')
-create_api_key_pass = os.environ.get('PROXY_SERVER_PASS')
+# parser = argparse.ArgumentParser(description='OpenAI API Proxy Server')
+# parser.add_argument('-p','--port', type=int, default=5000, help='Port to run the server on, defaults to 5000')
+# parser.add_argument('-o', '--db_option', type=bool, default=False, help='Set to true to use a non SQLite Database, defaults to False')
+# parser.add_argument('-t','--db_type', type=str, help='Database Type, for eg.: postgresql')
+# parser.add_argument('-m','--db_module', type=str, help='Database Module, for eg.: psycopg2')
+# parser.add_argument('-u','--db_username', type=str, help='Database Username')
+# parser.add_argument('-w','--db_password', type=str, help='Database Password')
+# parser.add_argument('-b','--db_host', type=str, default='localhost',help='Database URL, defaults to localhost')
+# parser.add_argument('-d','--db_name', type=str,help='Database Name')
+# parser.add_argument('-a','--api_key', type=str, help='OpenAI API Key')
+# parser.add_argument('-n', '--admin', type=str, help='Admin Username for the Proxy Server')
+# parser.add_argument('-s', '--admin_pass', type=str, help='Admin Password for the Proxy Server')
+
+
+# args, unknown = parser.parse_known_args()
+
+# if(args.db_type != None):
+#     os.environ['DB_TYPE'] = args.db_type
+# if(args.db_module != None):
+#     os.environ['DB_MODULE'] = args.db_module
+# if(args.db_username != None):
+#     os.environ['DB_USERNAME'] = args.db_username
+# if(args.db_password != None):
+#     os.environ['DB_PASSWORD'] = args.db_password
+# if(args.db_host != None):
+#     os.environ['DB_HOST'] = args.db_host
+# if(args.db_name != None):
+#     os.environ['DB_NAME'] = args.db_name
+# if(args.api_key != None):
+#     os.environ['OPENAI_API_KEY'] = args.api_key
+# if(args.admin != None):
+#     os.environ['PROXY_SERVER_USER'] = args.admin
+# if(args.admin_pass != None):
+#     os.environ['PROXY_SERVER_PASS'] = args.admin_pass
+
+
+# if args.db_option==False:
+#     db = ProxyAPIDatabase(args.db_option, None, None, None, None, None, None)
+# else:
+#     db = ProxyAPIDatabase(args.db_option, os.environ.get('DB_TYPE'), os.environ.get('DB_MODULE'), os.environ.get('DB_USERNAME'), os.environ.get('DB_PASSWORD'), os.environ.get('DB_HOST'), os.environ.get('DB_NAME'))
+
+# db.init_db()
+
+# create_api_key_user = os.environ.get('PROXY_SERVER_USER')
+# create_api_key_pass = os.environ.get('PROXY_SERVER_PASS')
 
 @app.route('/')
 def appEntry():
@@ -66,7 +74,7 @@ def createAPIKey(username):
                 resp = "Username already exists. Please try again with a different username."
             else:
                 db.create_api_key_with_quota(api_key=api_key, rem_quota=DEFAULT_INITIAL_QUOTA, req_count=0)
-                resp = f"API Key created: {api_key}"
+                resp = f"{api_key}"
                 
             return resp, 200, {'Content-Type':'text/html'}
     
@@ -166,4 +174,52 @@ def handleEmbedding(proxy_key):
     return response
 
 if __name__ == '__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser(description='OpenAI API Proxy Server')
+    parser.add_argument('-p','--port', type=int, default=5000, help='Port to run the server on, defaults to 5000')
+    parser.add_argument('-o', '--db_option', type=bool, default=False, help='Set to true to use a non SQLite Database, defaults to False')
+    parser.add_argument('-t','--db_type', type=str, help='Database Type, for eg.: postgresql')
+    parser.add_argument('-m','--db_module', type=str, help='Database Module, for eg.: psycopg2')
+    parser.add_argument('-u','--db_username', type=str, help='Database Username')
+    parser.add_argument('-w','--db_password', type=str, help='Database Password')
+    parser.add_argument('-b','--db_host', type=str, default='localhost',help='Database URL, defaults to localhost')
+    parser.add_argument('-d','--db_name', type=str,help='Database Name')
+    parser.add_argument('-a','--api_key', type=str, help='OpenAI API Key')
+    parser.add_argument('-n', '--admin', type=str, help='Admin Username for the Proxy Server')
+    parser.add_argument('-s', '--admin_pass', type=str, help='Admin Password for the Proxy Server')
+
+
+    args, unknown = parser.parse_known_args()
+
+    if(args.db_type != None):
+        os.environ['DB_TYPE'] = args.db_type
+    if(args.db_module != None):
+        os.environ['DB_MODULE'] = args.db_module
+    if(args.db_username != None):
+        os.environ['DB_USERNAME'] = args.db_username
+    if(args.db_password != None):
+        os.environ['DB_PASSWORD'] = args.db_password
+    if(args.db_host != None):
+        os.environ['DB_HOST'] = args.db_host
+    if(args.db_name != None):
+        os.environ['DB_NAME'] = args.db_name
+    if(args.api_key != None):
+        os.environ['OPENAI_API_KEY'] = args.api_key
+    if(args.admin != None):
+        os.environ['PROXY_SERVER_USER'] = args.admin
+    if(args.admin_pass != None):
+        os.environ['PROXY_SERVER_PASS'] = args.admin_pass
+
+    # app = Flask(__name__)
+
+    if args.db_option==False:
+        db = ProxyAPIDatabase(args.db_option, None, None, None, None, None, None)
+    else:
+        db = ProxyAPIDatabase(args.db_option, os.environ.get('DB_TYPE'), os.environ.get('DB_MODULE'), os.environ.get('DB_USERNAME'), os.environ.get('DB_PASSWORD'), os.environ.get('DB_HOST'), os.environ.get('DB_NAME'))
+
+    db.init_db()
+
+    create_api_key_user = os.environ.get('PROXY_SERVER_USER')
+    create_api_key_pass = os.environ.get('PROXY_SERVER_PASS')
     app.run(port=args.port)
