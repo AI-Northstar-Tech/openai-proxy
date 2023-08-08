@@ -14,7 +14,7 @@ A backend **proxy server** for setting quota per user, usage monitoring and trac
 
 ## **Installation (Administrator)**
 
-- The default database is SQLite. Unless specified, a proxy_api.db file is created. 
+- The default database is SQLite. Unless specified, a proxy_api.db file is created.
 - Any SQL Database, that is supported by SQLAlchemy, can be chosen. A database must be created.
 - Clone the repository and install the requirements.
 
@@ -23,21 +23,29 @@ pip install -r requirements.txt
 ```
 
 - You need to have an authentication **username** and **password**, which will only be used to make calls to the proxy server to create **new API keys**.
-- You can either setup the environment variables while running the [setup.py](./setup.py) file or set them in the .env file according to the [sample.env](./sample.env) file.
+- You can either setup the environment variables while running the [setup-proxy-server.py](./setup-proxy-server.py) file or set them in the .env file according to the [sample.env](./sample.env) file.
 
 ```sh
-python .\setup.py --help
-usage: setup.py [-h] [-o DB_OPTION] [-t DB_TYPE] [-m DB_MODULE] [-u DB_USERNAME] [-w DB_PASSWORD] [-b DB_HOST] [-d DB_NAME] [-a API_KEY] [-n ADMIN] [-p ADMIN_PASS]
+python ./setup-proxy-server.py --help
+usage: setup-proxy-server.py [-h] [-o {SQLite,}]
+                             [-t {postgresql,mysql,mssql}]
+                             [-m {psycopg2,mysql-connector-python,pyodbc}]
+                             [-u DB_USERNAME] [-w DB_PASSWORD]
+                             [-b DB_HOST] [-d DB_NAME]
+                             [-a OPENAI_API_KEY]
+                             [-n PROXY_SERVER_USER]
+                             [-p PROXY_SERVER_PASS]
 
 OpenAI API Proxy Server
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
-  -o DB_OPTION, --db_option DB_OPTION
-                        Set to Others to use a non SQLite Database, defaults to SQLite
-  -t DB_TYPE, --db_type DB_TYPE
+  -o {SQLite,}, --db_option {SQLite,}
+                        Set to Others to use a non SQLite
+                        Database, defaults to SQLite
+  -t {postgresql,mysql,mssql}, --db_type {postgresql,mysql,mssql}
                         Database Type, for eg.: postgresql
-  -m DB_MODULE, --db_module DB_MODULE
+  -m {psycopg2,mysql-connector-python,pyodbc}, --db_module {psycopg2,mysql-connector-python,pyodbc}
                         Database Module, for eg.: psycopg2
   -u DB_USERNAME, --db_username DB_USERNAME
                         Database Username
@@ -47,11 +55,11 @@ optional arguments:
                         Database URL, defaults to localhost
   -d DB_NAME, --db_name DB_NAME
                         Database Name
-  -a API_KEY, --api_key API_KEY
+  -a OPENAI_API_KEY, --openai_api_key OPENAI_API_KEY
                         OpenAI API Key
-  -n ADMIN, --admin ADMIN
+  -n PROXY_SERVER_USER, --proxy_server_user PROXY_SERVER_USER
                         Admin Username for the Proxy Server
-  -p ADMIN_PASS, --admin_pass ADMIN_PASS
+  -p PROXY_SERVER_PASS, --proxy_server_pass PROXY_SERVER_PASS
                         Admin Password for the Proxy Server
 ```
 
@@ -80,11 +88,12 @@ openai.api_key = '**********************************************'
 openai.api_base = f'{SERVER_URL}/{PROXY_API_KEY}/v1'
 ```
 
-- The **openai.api_key** must contain some value. You can provide any random value to it because the requests are being transfered to the backend server, so it doensn't matter.
+- The **openai.api_key** must contain the `***` value as above to make it work.
 - Requests can then be made normally to OpenAI Chat Completion and Embedding Models
 
 ```python
-chat_completion = ChatCompletion.create(model="gpt-3.5-turbo", 
-                                        messages=[{"role": "user", 
-                                                   "content": "Tell me in detail about AINorthstar Tech"}])
+chat_completion = ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[{"role": "user", "content": "Tell me in detail about AINorthstar Tech"}],
+)
 ```

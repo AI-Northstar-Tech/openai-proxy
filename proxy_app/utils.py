@@ -1,6 +1,7 @@
+import tiktoken
+
 DEFAULT_INITIAL_QUOTA = 20
 MAX_TOKEN_LIMIT = 1000
-import tiktoken
 
 price_per_token = {
     "text-ada-001": 0.0004 / 1000,

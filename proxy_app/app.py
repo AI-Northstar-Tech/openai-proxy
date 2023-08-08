@@ -1,5 +1,4 @@
-from flask import Flask, Response
-from flask import request, stream_with_context
+from flask import Flask, Response, request, stream_with_context
 from proxy_app.request_handler import ChatCompletionHandler, EmbeddingHandler
 from proxy_app.pricing import HandlePricing
 from proxy_app.utils import DEFAULT_INITIAL_QUOTA, MAX_TOKEN_LIMIT
@@ -10,16 +9,27 @@ import openai
 import dotenv
 import os
 
-dotenv.load_dotenv('.env')
+dotenv.load_dotenv(".env")
 app = Flask(__name__)
 
 if os.environ.get("DB_OPTION") == "SQLite":
-    db = ProxyAPIDatabase(os.environ.get("DB_OPTION"), None, None, None, None, None, None)
+    db = ProxyAPIDatabase(
+        os.environ.get("DB_OPTION"), None, None, None, None, None, None
+    )
 else:
-    db = ProxyAPIDatabase(os.environ.get("DB_OPTION"), os.environ.get('DB_TYPE'), os.environ.get('DB_MODULE'), os.environ.get('DB_USERNAME'), os.environ.get('DB_PASSWORD'), os.environ.get('DB_HOST'), os.environ.get('DB_NAME'))
+    db = ProxyAPIDatabase(
+        os.environ.get("DB_OPTION"),
+        os.environ.get("DB_TYPE"),
+        os.environ.get("DB_MODULE"),
+        os.environ.get("DB_USERNAME"),
+        os.environ.get("DB_PASSWORD"),
+        os.environ.get("DB_HOST"),
+        os.environ.get("DB_NAME"),
+    )
 
 create_api_key_user = os.environ.get("PROXY_SERVER_USER")
 create_api_key_pass = os.environ.get("PROXY_SERVER_PASS")
+
 
 @app.route("/")
 def appEntry():
@@ -28,6 +38,7 @@ def appEntry():
         200,
         {"ContentType": "text/html"},
     )
+
 
 @app.route("/create_api_key/<string:username>", methods=["POST", "GET"])
 def createAPIKey(username):
@@ -49,6 +60,7 @@ def createAPIKey(username):
 
     except KeyError:
         return "Invalid Credentials", 200, {"ContentType": "text/html"}
+
 
 @app.route("/<string:proxy_key>/v1/chat/completions", methods=["POST", "GET"])
 def handleChatCompetion(proxy_key):
@@ -121,6 +133,7 @@ def handleChatCompetion(proxy_key):
 
     return response
 
+
 @app.route("/<string:proxy_key>/v1/embeddings", methods=["POST", "GET"])
 def handleEmbedding(proxy_key):
     req_data = json.loads(request.data.decode("utf-8"))
@@ -160,6 +173,7 @@ def handleEmbedding(proxy_key):
             response = Response(f"INVALID-API-KEY", mimetype="application/json")
 
     return response
+
 
 if __name__ == "__main__":
     app.run(port=os.environ.get("PORT"))
