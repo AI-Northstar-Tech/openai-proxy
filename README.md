@@ -14,7 +14,8 @@ A backend **proxy server** for setting quota per user, usage monitoring and trac
 
 ## **Installation (Administrator)**
 
-- Choose an SQL Database that is supported by SQLAlchemy and create a database.
+- The default database is SQLite. Unless specified, a proxy_api.db file is created. 
+- Any SQL Database, that is supported by SQLAlchemy, can be chosen. A database must be created.
 - Clone the repository and install the requirements.
 
 ```sh
@@ -22,18 +23,18 @@ pip install -r requirements.txt
 ```
 
 - You need to have an authentication **username** and **password**, which will only be used to make calls to the proxy server to create **new API keys**.
-- You can either setup the environment variables while running the Flask Application or set them in the .env file according to the [sample.env](./sample.env) file.
+- You can either setup the environment variables while running the [setup.py](./setup.py) file or set them in the .env file according to the [sample.env](./sample.env) file.
 
 ```sh
-python -m flask --help
-usage: __main__.py [-h] [-p PORT] [-t DB_TYPE] [-m DB_MODULE] [-u DB_USERNAME] [-w DB_PASSWORD] [-b DB_HOST] [-d DB_NAME]
-                   [-a API_KEY] [-n ADMIN] [-s ADMIN_PASS]
+python .\setup.py --help
+usage: setup.py [-h] [-o DB_OPTION] [-t DB_TYPE] [-m DB_MODULE] [-u DB_USERNAME] [-w DB_PASSWORD] [-b DB_HOST] [-d DB_NAME] [-a API_KEY] [-n ADMIN] [-p ADMIN_PASS]
 
 OpenAI API Proxy Server
 
 optional arguments:
   -h, --help            show this help message and exit
-  -p PORT, --port PORT  Port to run the server on, defaults to 5000
+  -o DB_OPTION, --db_option DB_OPTION
+                        Set to Others to use a non SQLite Database, defaults to SQLite
   -t DB_TYPE, --db_type DB_TYPE
                         Database Type, for eg.: postgresql
   -m DB_MODULE, --db_module DB_MODULE
@@ -50,14 +51,14 @@ optional arguments:
                         OpenAI API Key
   -n ADMIN, --admin ADMIN
                         Admin Username for the Proxy Server
-  -s ADMIN_PASS, --admin_pass ADMIN_PASS
+  -p ADMIN_PASS, --admin_pass ADMIN_PASS
                         Admin Password for the Proxy Server
 ```
 
 - Run the Flask Application
 
 ```sh
-python -m flask run
+waitress-serve --port=5000  wsgi:app
 ```
 
 ## **User Instructions**

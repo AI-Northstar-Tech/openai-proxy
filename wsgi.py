@@ -1,5 +1,8 @@
 from proxy_app.app import app
+from waitress import serve
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-gu_app = app
 if __name__ == "__main__":
-    gu_app.run()
+    serve(app, host='0.0.0.0', port=5000)

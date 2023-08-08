@@ -6,17 +6,19 @@ from proxy_app.Database.models.apiKeyToQuota import APIKeyToQuota
 from sqlalchemy.orm import Session
 import psycopg2
 
-
 class ProxyAPIDatabase:
-    def __init__(self, db_type, db_module, username, password, host, name):
+    def __init__(self, db_option, db_type, db_module, username, password, host, name):
         self.db_type = db_type
         self.db_module = db_module
         self.username = username
         self.password = password
         self.host = host
         self.name = name
-        self.url = f"{db_type}+{db_module}://{username}:{password}@{host}/{name}"
-        print(f"Database URL: {self.url}")
+        self.db_option = db_option
+        if db_option == "SQLite":
+            self.url = "sqlite:///proxy_api.db"
+        else:
+            self.url = f"{db_type}+{db_module}://{username}:{password}@{host}/{name}"
         self.engine = create_engine(self.url)
 
     def init_db(self):
