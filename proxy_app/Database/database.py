@@ -31,7 +31,8 @@ class ProxyAPIDatabase:
             )
             session.add(api_key_to_quota)
             session.commit()
-            print(f"Added New API_Key: {api_key} with initial quota: {rem_quota}")
+            print(f"Created new API key: {api_key} with initial quota: {rem_quota}")
+        return api_key
 
     def insert_data(self, req_id, api_key, req_data, response):
         with Session(self.engine) as session:

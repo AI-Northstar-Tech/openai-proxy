@@ -1,3 +1,4 @@
 .env
 __pycache__/
 proxy_app/.DS_Store
+*.db
