@@ -67,14 +67,14 @@ class ProxyAPIDatabase:
             )
             return True if api_key_to_quota else False
 
-    def validate_api_key_request(self, api_key, curr_request_cost):
+    def validate_api_key_request(self, api_key):
         with Session(self.engine) as session:
             api_key_to_quota = (
                 session.query(APIKeyToQuota)
                 .filter(APIKeyToQuota.api_key == api_key)
                 .first()
             )
-            if api_key_to_quota and api_key_to_quota.rem_quota > curr_request_cost:
+            if api_key_to_quota:
                 return True, api_key_to_quota.rem_quota, f"{api_key}__{time.time_ns()}"
             else:
                 return False, api_key_to_quota.rem_quota, None

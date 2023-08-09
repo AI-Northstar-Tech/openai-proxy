@@ -12,21 +12,23 @@ import os
 dotenv.load_dotenv(".env")
 app = Flask(__name__)
 
-if os.environ.get("DB_OPTION") == "SQLite":
-    db = ProxyAPIDatabase(
-        os.environ.get("DB_OPTION"), None, None, None, None, None, None
-    )
-else:
-    db = ProxyAPIDatabase(
-        os.environ.get("DB_OPTION"),
-        os.environ.get("DB_TYPE"),
-        os.environ.get("DB_MODULE"),
-        os.environ.get("DB_USERNAME"),
-        os.environ.get("DB_PASSWORD"),
-        os.environ.get("DB_HOST"),
-        os.environ.get("DB_NAME"),
-    )
-
+def get_db():
+    if os.environ.get("DB_OPTION") == "SQLite":
+        db = ProxyAPIDatabase(
+            os.environ.get("DB_OPTION"), None, None, None, None, None, None
+        )
+    else:
+        db = ProxyAPIDatabase(
+            os.environ.get("DB_OPTION"),
+            os.environ.get("DB_TYPE"),
+            os.environ.get("DB_MODULE"),
+            os.environ.get("DB_USERNAME"),
+            os.environ.get("DB_PASSWORD"),
+            os.environ.get("DB_HOST"),
+            os.environ.get("DB_NAME"),
+        )
+    return db
+db = get_db()
 create_api_key_user = os.environ.get("PROXY_SERVER_USER")
 create_api_key_pass = os.environ.get("PROXY_SERVER_PASS")
 
@@ -66,13 +68,8 @@ def createAPIKey(username):
 def handleChatCompetion(proxy_key):
     # Checking if the API key is valid and that the Quota is sufficient for the request uisng tiktoken library
     req_data = json.loads(request.data.decode("utf-8"))
-    price_prediction = HandlePricing(req_data, "chat_completions")
-    tiktoken_tokens_cost = price_prediction.get_pricing_estimate()
-
     if db.validate_api_key(proxy_key):
-        is_valid, rem_quota, req_id = db.validate_api_key_request(
-            proxy_key, tiktoken_tokens_cost
-        )
+        is_valid, rem_quota, req_id = db.validate_api_key_request(proxy_key)
     else:
         is_valid = False
         rem_quota = None
@@ -113,7 +110,7 @@ def handleChatCompetion(proxy_key):
 
                 yield (f"data: [DONE]\n\n")
 
-                tokens_cost = price_prediction.stream_pricing_estimate(resp_tokens)
+                # sum up cost of tokens
                 print(f"Total Token Cost: {tokens_cost}")
                 db.insert_data(req_id, proxy_key, req_data, stream_resp)
                 db.update_remQuota(proxy_key, rem_quota - tokens_cost)
@@ -125,7 +122,7 @@ def handleChatCompetion(proxy_key):
     else:
         if rem_quota != None:
             response = Response(
-                f"Insufficient Quota, Remaining Quota: {rem_quota} and Request Cost: {tiktoken_tokens_cost}",
+                f"Insufficient Quota, Remaining Quota: {rem_quota}",
                 mimetype="application/json",
             )
         else:
@@ -137,13 +134,9 @@ def handleChatCompetion(proxy_key):
 @app.route("/<string:proxy_key>/v1/embeddings", methods=["POST", "GET"])
 def handleEmbedding(proxy_key):
     req_data = json.loads(request.data.decode("utf-8"))
-    price_prediction = HandlePricing(req_data, "embeddings")
-    tiktoken_tokens_cost = price_prediction.get_pricing_estimate()
-
+    
     if db.validate_api_key(proxy_key):
-        is_valid, rem_quota, req_id = db.validate_api_key_request(
-            proxy_key, tiktoken_tokens_cost
-        )
+        is_valid, rem_quota, req_id = db.validate_api_key_request(proxy_key)
     else:
         is_valid = False
         rem_quota = None
@@ -166,7 +159,7 @@ def handleEmbedding(proxy_key):
     else:
         if rem_quota != None:
             response = Response(
-                f"Insufficient Quota, Remaining Quota: {rem_quota} and Request Cost: {tiktoken_tokens_cost}",
+                f"Insufficient Quota, Remaining Quota: {rem_quota}",
                 mimetype="application/json",
             )
         else:

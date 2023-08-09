@@ -9,7 +9,7 @@ A backend **proxy server** for setting quota per user, usage monitoring and trac
 
 ## **Requirements**
 
-- Any **Relational Database** supported by SQLAlchemy
+- Any **Relational Database** supported by SQLAlchemy (we use SQLite by default)
 - **OpenAI API Key**
 
 ## **Installation (Administrator)**
