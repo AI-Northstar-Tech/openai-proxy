@@ -8,24 +8,20 @@ from proxy_app.utils import DEFAULT_INITIAL_QUOTA
 create_api_key_user = os.environ.get("PROXY_SERVER_USER")
 create_api_key_pass = os.environ.get("PROXY_SERVER_PASS")
 
+
 def createAPIKey(args):
     db = get_db()
     db.init_db()
     try:
-        if (
-            create_api_key_user == args.admin
-            and create_api_key_pass == args.password
-        ):
-            api_key = f"{args.username}_{uuid.uuid3(uuid.NAMESPACE_DNS, args.username)}"
-            if db.validate_api_key(api_key=api_key):
-                resp = "Username already exists. Please try again with a different username."
-            else:
-                db.create_api_key_with_quota(
-                    api_key=api_key, rem_quota=args.quota, req_count=0
-                )
-                resp = f"{api_key}"
-
+        if create_api_key_user == args.admin and create_api_key_pass == args.password:
+            api_key = f"{args.username}_{uuid.uuid4()}"
+            db.create_api_key_with_quota(
+                api_key=api_key, rem_quota=args.quota, req_count=0
+            )
+            resp = f"{api_key}"
             return resp
+        else:
+            return "Invalid Credentials"
     except KeyError:
         return "Invalid Credentials"
 
@@ -36,14 +32,10 @@ def main():
         "-u", "--username", help="The username for which to create an API key."
     )
     parser.add_argument(
-        "-a",
-        "--admin",
-        help="The admin username to create an API key."
+        "-a", "--admin", help="The admin username to create an API key."
     )
     parser.add_argument(
-        "-p",
-        "--password",
-        help="The admin password to create an API key."
+        "-p", "--password", help="The admin password to create an API key."
     )
     parser.add_argument(
         "-q",

@@ -56,6 +56,18 @@ class ProxyAPIDatabase:
                 session.commit()
                 print(f"Updated rem_quota for API_Key: {api_key} to {rem_quota}")
 
+    def add_quota(self, api_key, quota):
+        with Session(self.engine) as session:
+            result = (
+                session.query(APIKeyToQuota)
+                .filter(APIKeyToQuota.api_key == api_key)
+                .first()
+            )
+            if result:
+                result.rem_quota += quota
+                session.commit()
+                print(f"Added quota for API_Key: {api_key} to {quota}")
+
     def validate_api_key(self, api_key):
         with Session(self.engine) as session:
             api_key_to_quota = (
