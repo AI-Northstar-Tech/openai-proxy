@@ -62,7 +62,6 @@ options:
   -p PROXY_SERVER_PASS, --proxy_server_pass PROXY_SERVER_PASS
                         Admin Password for the Proxy Server
 ```
-
 - Run the Flask Application
 
 ```sh
@@ -78,6 +77,24 @@ url = f'{SERVER_URL}/create_api_key/{USERNAME}'
 # For example http://localhost:5000/create_api_key/aintech_user
 params = {"user":{ADMIN_USERNAME}, "password":{ADMIN_PASSWORD}}
 print(requests.get(url = url, params = params).content)
+```
+- Administrator can generate the API key using [create_api_key](./create_api_key.py).
+```sh
+python .\create_api_key.py --help
+usage: create_api_key.py [-h] [-u USERNAME] [-a ADMIN] [-p PASSWORD] [-q QUOTA]
+
+Create an API key for a user.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -u USERNAME, --username USERNAME
+                        The username for which to create an API key.
+  -a ADMIN, --admin ADMIN
+                        The admin username to create an API key.
+  -p PASSWORD, --password PASSWORD
+                        The admin password to create an API key.
+  -q QUOTA, --quota QUOTA
+                        The quota (in USD) to assign to the API key.
 ```
 
 - To use the API key, run the following lines of code before making API calls to OpenAI

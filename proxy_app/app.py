@@ -28,6 +28,7 @@ def get_db():
         )
     return db
 db = get_db()
+db.init_db()
 create_api_key_user = os.environ.get("PROXY_SERVER_USER")
 create_api_key_pass = os.environ.get("PROXY_SERVER_PASS")
 
@@ -37,7 +38,7 @@ def appEntry():
     return (
         "<h2>Welcome to the OpenAI API Proxy Server</h2>",
         200,
-        {"ContentType": "text/html"},
+        {"Content-Type": "text/html"},
     )
 
 
@@ -55,12 +56,12 @@ def createAPIKey(username):
                 db.create_api_key_with_quota(
                     api_key=api_key, rem_quota=DEFAULT_INITIAL_QUOTA, req_count=0
                 )
-                resp = f"API Key created: {api_key}"
+                resp = f"{api_key}"
 
             return resp, 200, {"Content-Type": "text/html"}
 
     except KeyError:
-        return "Invalid Credentials", 200, {"ContentType": "text/html"}
+        return "Invalid Credentials", 200, {"Content-Type": "text/html"}
 
 
 @app.route("/<string:proxy_key>/v1/chat/completions", methods=["POST", "GET"])
