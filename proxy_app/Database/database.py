@@ -22,9 +22,6 @@ class ProxyAPIDatabase:
         self.engine = create_engine(self.url)
 
     def init_db(self):
-        print(
-            f"Data base initialized with [Type:{self.db_type}] and [Name:{self.name}]"
-        )
         Base.metadata.create_all(self.engine)
 
     def create_api_key_with_quota(self, api_key, rem_quota, req_count):
