@@ -1,6 +1,5 @@
 from flask import Flask, Response, request, stream_with_context
 from proxy_app.request_handler import ChatCompletionHandler, EmbeddingHandler
-from proxy_app.pricing import HandlePricing
 from proxy_app.utils import DEFAULT_INITIAL_QUOTA, MAX_TOKEN_LIMIT
 from proxy_app.Database.database import ProxyAPIDatabase
 import json
