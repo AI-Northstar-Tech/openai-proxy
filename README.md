@@ -72,15 +72,9 @@ waitress-serve --port=5000  wsgi:app
 
 - Create an API key to make calls to the proxy server. This can be run only once for a given username, so the API key must be saved immediately.
 
-```python
-url = f'{SERVER_URL}/create_api_key/{USERNAME}'
-# For example http://localhost:5000/create_api_key/aintech_user
-params = {"user":{ADMIN_USERNAME}, "password":{ADMIN_PASSWORD}}
-print(requests.get(url = url, params = params).content)
-```
 - Administrator can generate the API key using [create_api_key](./create_api_key.py).
 ```sh
-python .\create_api_key.py --help
+python create_api_key.py --help
 usage: create_api_key.py [-h] [-u USERNAME] [-a ADMIN] [-p PASSWORD] [-q QUOTA]
 
 Create an API key for a user.

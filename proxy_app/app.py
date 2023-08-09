@@ -7,9 +7,11 @@ import uuid
 import openai
 import dotenv
 import os
+import time
 
 dotenv.load_dotenv(".env")
 app = Flask(__name__)
+
 
 def get_db():
     if os.environ.get("DB_OPTION") == "SQLite":
@@ -27,6 +29,8 @@ def get_db():
             os.environ.get("DB_NAME"),
         )
     return db
+
+
 db = get_db()
 db.init_db()
 create_api_key_user = os.environ.get("PROXY_SERVER_USER")
@@ -66,6 +70,7 @@ def createAPIKey(username):
 
 @app.route("/<string:proxy_key>/v1/chat/completions", methods=["POST", "GET"])
 def handleChatCompetion(proxy_key):
+    timeStart = time.time()
     # Checking if the API key is valid and that the Quota is sufficient for the request uisng tiktoken library
     req_data = json.loads(request.data.decode("utf-8"))
     if db.validate_api_key(proxy_key):
@@ -127,14 +132,16 @@ def handleChatCompetion(proxy_key):
             )
         else:
             response = Response(f"INVALID-API-KEY", mimetype="application/json")
-
+    timeEnd = time.time()
+    timeTaken = timeEnd - timeStart
+    print(f"Time taken (total): {timeTaken}")
     return response
 
 
 @app.route("/<string:proxy_key>/v1/embeddings", methods=["POST", "GET"])
 def handleEmbedding(proxy_key):
     req_data = json.loads(request.data.decode("utf-8"))
-    
+
     if db.validate_api_key(proxy_key):
         is_valid, rem_quota, req_id = db.validate_api_key_request(proxy_key)
     else:
