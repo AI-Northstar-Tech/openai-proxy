@@ -1,6 +1,6 @@
 # **OpenAI Proxy Server**
 
-A backend **proxy server** for setting quota per user, usage monitoring and tracking of OpenAI requests.
+A backend **proxy server** for setting quota per user, usage monitoring and tracking of OpenAI/Azure OpenAI/Anthropic/Hugging Face/Replicate requests.
 
 ## **Features**
 
