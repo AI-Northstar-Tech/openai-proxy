@@ -4,3 +4,4 @@ tiktoken==0.3.3
 Flask==2.3.2
 SQLAlchemy==2.0.15
 waitress==2.1.2
+litellm

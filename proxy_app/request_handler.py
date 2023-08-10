@@ -1,4 +1,5 @@
 import openai
+from litellm import completion
 import os
 from proxy_app.utils import (
     price_calculator_chat_completion,
@@ -35,7 +36,7 @@ class ChatCompletionHandler:
                     self.req["max_tokens"] = MAX_TOKEN_LIMIT
                 # start timer
                 timeStart = time.time()
-                response = openai.ChatCompletion.create(**self.req)
+                response = completion(**self.req)
                 # end timer
                 timeEnd = time.time()
                 # calculate time taken
@@ -55,7 +56,7 @@ class ChatCompletionHandler:
             except KeyError:
                 self.req["max_tokens"] = MAX_TOKEN_LIMIT
 
-            response = openai.ChatCompletion.create(**self.req)
+            response = completion(**self.req)
 
             self.prompt_tokens = response["usage"]["prompt_tokens"]
             self.response_tokens = response["usage"]["completion_tokens"]
