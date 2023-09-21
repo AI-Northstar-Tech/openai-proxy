@@ -61,7 +61,7 @@ class ChatCompletionHandler:
             self.prompt_tokens = response["usage"]["prompt_tokens"]
             self.response_tokens = response["usage"]["completion_tokens"]
             self.total_tokens = response["usage"]["total_tokens"]
-            self.tokens_cost = price_calculator_chat_completion(response["usage"])
+            self.tokens_cost = completion_cost(completion_response=response)
             return True, response, False
 
         except openai.InvalidRequestError as e:

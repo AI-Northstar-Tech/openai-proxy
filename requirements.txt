@@ -1,7 +1,8 @@
-openai==0.27.6
-uuid==1.30
-tiktoken==0.3.3
-Flask==2.3.2
-SQLAlchemy==2.0.15
-waitress==2.1.2
+openai
+uuid
+tiktoken
+Flask
+SQLAlchemy
+waitress
 litellm
+psycopg2
